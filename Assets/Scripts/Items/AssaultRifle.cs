@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using NVIDIA;
 
 public class AssaultRifle : MonoBehaviour
 {

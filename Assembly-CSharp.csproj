@@ -57,6 +57,7 @@
     <Compile Include="Assets\Scripts\Inventory\IInventoryItem.cs" />
     <Compile Include="Assets\Scripts\Other\Target.cs" />
     <Compile Include="Assets\Scripts\Items\Katana.cs" />
+    <Compile Include="Assets\Scripts\Other\LightAntiCollision.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Player\SlowMotion.cs" />
     <Compile Include="Assets\Scripts\Inventory\Inventory.cs" />
@@ -67,7 +68,9 @@
     <Compile Include="Assets\Scripts\Items\AssaultRifle.cs" />
     <Compile Include="Assets\Scripts\Player\MoveCamera.cs" />
     <Compile Include="Assets\Scripts\Items\Shotgun.cs" />
+    <Compile Include="Assets\Scripts\Other\LightSpawner.cs" />
     <Compile Include="Assets\Scripts\Items\Pistol.cs" />
+    <Compile Include="Assets\Breakable Windows\Scripts\BreakableWindow.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Particles\EffectExamples\Misc Effects\Prefabs\Readme_Dissolve_Respawn_.txt" />
@@ -671,6 +674,10 @@
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
       <Project>{B98318D7-B301-3CE4-B883-65285F0E893C}</Project>
       <Name>Assembly-CSharp-firstpass</Name>
+    </ProjectReference>
+    <ProjectReference Include="Unity.ProBuilder.Examples.Editor.csproj">
+      <Project>{1AA68448-7828-DB6B-9A72-2F91C07E162A}</Project>
+      <Name>Unity.ProBuilder.Examples.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
