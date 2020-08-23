@@ -39,8 +39,11 @@ public class Shotgun : MonoBehaviour
             if (target != null)
             {
                 target.TakeDamage(damage);
-                GameObject enemyImpactGameObject = Instantiate(enemyImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(enemyImpactGameObject, 2f);
+                if (target.enemyImpactEffect != null)
+                {
+                    GameObject enemyImpactGameObject = Instantiate(target.enemyImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    Destroy(enemyImpactGameObject, 2f);
+                }
             }
             else
             {
@@ -55,6 +58,11 @@ public class Shotgun : MonoBehaviour
         if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, recoilRange))
         {
             playerRigidbody.AddForce(-camera.transform.forward * recoilForce);
+        }
+
+        if (hit.transform.gameObject.GetComponent<BreakableWindow>() != null)
+        {
+            hit.transform.gameObject.GetComponent<BreakableWindow>().breakWindow();
         }
     }
 }

@@ -7,6 +7,8 @@ public class Target : MonoBehaviour
     public GrapplingGun grappleScript;
     public Katana katanaScript;
 
+    public GameObject enemyImpactEffect = null;
+
     private void OnTriggerStay(Collider other)
     {
         if (other == katana.GetComponent<Collider>() && katanaScript.isSwinging == true)

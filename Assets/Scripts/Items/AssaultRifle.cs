@@ -37,8 +37,11 @@ public class AssaultRifle : MonoBehaviour
             if (target != null)
             {
                 target.TakeDamage(damage);
-                GameObject enemyImpactGameObject = Instantiate(enemyImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                Destroy(enemyImpactGameObject, 2f);
+                if (target.enemyImpactEffect != null)
+                {
+                    GameObject enemyImpactGameObject = Instantiate(target.enemyImpactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                    Destroy(enemyImpactGameObject, 2f);
+                }
             }
             else
             {
@@ -50,7 +53,12 @@ public class AssaultRifle : MonoBehaviour
             {
                 hit.rigidbody.AddForce(-hit.normal * impactForce);
             }
-            
+
+            if (hit.transform.gameObject.GetComponent<BreakableWindow>() != null)
+            {
+                hit.transform.gameObject.GetComponent<BreakableWindow>().breakWindow();
+            }
+
         }
     }
 }
