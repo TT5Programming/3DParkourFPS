@@ -6,7 +6,7 @@ public class Pistol : MonoBehaviour
 
     public KeyCode reload;
 
-    public Text magText;
+    public Text magText, reloadText;
 
     private bool hasFired;
 
@@ -34,8 +34,9 @@ public class Pistol : MonoBehaviour
 
     void Update()
     {
+        reloadText.gameObject.SetActive(reloading);
         magText.text = bulletsInMag.ToString() + " / " + magSize.ToString();
-        if (bulletsInMag > 0f && !reloading)
+        if (!reloading)
         {
             if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire)
             {
@@ -52,7 +53,7 @@ public class Pistol : MonoBehaviour
             }
             hasFired = false;
         }
-        if (Input.GetKeyDown(reload))
+        if (Input.GetKeyDown(reload) || bulletsInMag <= 0)
         {
             reloading = true;
             Invoke("Reload", timeToReload);

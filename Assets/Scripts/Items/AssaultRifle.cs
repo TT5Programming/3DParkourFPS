@@ -6,7 +6,7 @@ public class AssaultRifle : MonoBehaviour
 
     public KeyCode reload;
 
-    public Text magText;
+    public Text magText, reloadText;
 
     private bool reloading;
 
@@ -32,8 +32,9 @@ public class AssaultRifle : MonoBehaviour
 
     void Update()
     {
+        reloadText.gameObject.SetActive(reloading);
         magText.text = bulletsInMag.ToString() + " / " + magSize.ToString();
-        if (bulletsInMag > 0f && !reloading)
+        if (!reloading)
         {
             if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire)
             {
@@ -42,7 +43,7 @@ public class AssaultRifle : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(reload))
+        if (Input.GetKeyDown(reload) || bulletsInMag <= 0)
         {
             reloading = true;
             Invoke("Reload", timeToReload);

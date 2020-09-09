@@ -9,7 +9,7 @@ public class BowScript : MonoBehaviour
     
     public KeyCode reload;
 
-    public Text magText;
+    public Text magText, reloadText;
 
     private bool reloading;
 
@@ -45,8 +45,9 @@ public class BowScript : MonoBehaviour
 
     void Update()
     {
+        reloadText.gameObject.SetActive(reloading);
         magText.text = bulletsInMag.ToString() + " / " + magSize.ToString();
-        if (bulletsInMag > 0f && !reloading)
+        if (!reloading)
         {
             if (Input.GetKey(fireButton) && charge < chargeMax)
             {
@@ -72,9 +73,24 @@ public class BowScript : MonoBehaviour
                     damage = 0f;
                     bulletsInMag--;
                 }
+                else
+                {
+                    if (charge <= chargeMin)
+                    {
+                        charge = chargeMin;
+                    }
+                    damage = charge / chargeMax * damageMax;
+                    Rigidbody arrow = Instantiate(arrowObj, spawn.position, spawn.rotation) as Rigidbody;
+                    arrow.AddForce(camera.transform.forward * charge, ForceMode.Impulse);
+                    ArrowScript arrowScript = arrow.gameObject.GetComponentInChildren<ArrowScript>();
+                    arrowScript.damage = damage;
+                    charge = 0f;
+                    damage = 0f;
+                    bulletsInMag--;
+                }
             }
         }
-        if (Input.GetKeyDown(reload))
+        if (Input.GetKeyDown(reload) || bulletsInMag <= 0)
         {
             reloading = true;
             Invoke("Reload", timeToReload);

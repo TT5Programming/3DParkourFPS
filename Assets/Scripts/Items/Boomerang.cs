@@ -17,9 +17,12 @@ public class Boomerang : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(key))
+        if (!hasFired)
         {
-            Throw();
+            if (Input.GetKeyDown(key))
+            {
+                Throw();
+            }
         }
         if (Input.GetKeyDown(returnKey))
         {
