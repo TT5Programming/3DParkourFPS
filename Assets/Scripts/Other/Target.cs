@@ -6,8 +6,16 @@ public class Target : MonoBehaviour
     public GameObject player, katana, deathEffect;
     public GrapplingGun grappleScript;
     public Katana katanaScript;
+    public float maxHealth;
+
+    public GameObject createOnDeath;
 
     public GameObject enemyImpactEffect = null;
+
+    private void Start()
+    {
+        health = maxHealth;
+    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -32,8 +40,15 @@ public class Target : MonoBehaviour
 
     void Die()
     {
-        GameObject deathEffectObject = Instantiate(deathEffect, transform.position, transform.rotation);
-        Destroy(deathEffectObject, 2f);
+        if (deathEffect != null)
+        {
+            GameObject deathEffectObject = Instantiate(deathEffect, transform.position, transform.rotation);
+            Destroy(deathEffectObject, 2f);
+        }
+        if (createOnDeath != null)
+        {
+            Instantiate(createOnDeath, transform.position, Quaternion.identity);
+        }
         Destroy(gameObject);
     }
 }

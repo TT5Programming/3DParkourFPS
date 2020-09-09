@@ -9,6 +9,8 @@ TagManager:
   - Grappleable
   - Enemy
   - Level
+  - Spawnpoint
+  - Rooms
   layers:
   - Default
   - TransparentFX
@@ -23,9 +25,9 @@ TagManager:
   - Postprocessing
   - Grappleable
   - Hookable
-  - 
-  - 
-  - 
+  - Projectile
+  - Player
+  - Enemy
   - 
   - 
   - 

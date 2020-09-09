@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Pistol : MonoBehaviour
 {
+
+    public KeyCode reload;
+
+    public Text magText;
+
+    private bool hasFired;
 
     public float damage = 10f;
     public float range = 100f;
@@ -10,26 +17,52 @@ public class Pistol : MonoBehaviour
 
     private float nextTimeToFire = 0f;
 
+    public bool reloading;
+
+    public float magSize;
+    private float bulletsInMag;
+    public float timeToReload;
+
     public Camera camera;
     public ParticleSystem muzzleFlash;
     public GameObject impactEffect, enemyImpactEffect;
 
+    private void Start()
+    {
+        bulletsInMag = magSize;
+    }
+
     void Update()
     {
-        if (Input.GetButton("Fire1") && Time.time>= nextTimeToFire)
+        magText.text = bulletsInMag.ToString() + " / " + magSize.ToString();
+        if (bulletsInMag > 0f && !reloading)
         {
-            nextTimeToFire = Time.time + 1f / fireRate;
-            Shoot();
+            if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire)
+            {
+                nextTimeToFire = Time.time + 1f / fireRate;
+                Shoot();
+                hasFired = true;
+            }
+            if (Input.GetButtonDown("Fire1"))
+            {
+                if (hasFired == false)
+                {
+                    Shoot();
+                }
+            }
+            hasFired = false;
         }
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetKeyDown(reload))
         {
-            Shoot();
+            reloading = true;
+            Invoke("Reload", timeToReload);
         }
     }
 
     void Shoot()
     {
         muzzleFlash.Play();
+        bulletsInMag--;
 
         RaycastHit hit;
         if(Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, range))
@@ -62,5 +95,11 @@ public class Pistol : MonoBehaviour
             }
 
         }
+    }
+
+    void Reload()
+    {
+        reloading = false;
+        bulletsInMag = magSize;
     }
 }

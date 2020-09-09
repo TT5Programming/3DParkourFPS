@@ -9,7 +9,7 @@ public class InventorySlot : MonoBehaviour
     public Image image;
     public Color normal, active;
     public InventorySlot[] InventorySlots;
-    private bool resetting, isActive;
+    public bool resetting, isActive;
     private int m = 0;
     public GameObject itemInSlot = null;
     
@@ -36,8 +36,12 @@ public class InventorySlot : MonoBehaviour
         }
         if (Input.GetKeyDown(slotNumber))
         {
-            isActive = true;
-            resetting = true;
+            if (itemInSlot != null)
+            {
+                isActive = true;
+            }
+             resetting = true;
+            
         }
     }
     public void Reset(KeyCode numPressed)

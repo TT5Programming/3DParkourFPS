@@ -65,6 +65,7 @@
     <Compile Include="Assets\Editor\ImageEffects\NoiseAndGrainEditor.cs" />
     <Compile Include="Assets\Editor\ImageEffects\EdgeDetectionEditor.cs" />
     <Compile Include="Assets\Editor\ImageEffects\ColorCorrectionCurvesEditor.cs" />
+    <Compile Include="Assets\Editor\MonoScriptPropertyDrawer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

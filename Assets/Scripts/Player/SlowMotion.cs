@@ -26,9 +26,12 @@ public class SlowMotion : MonoBehaviour
         }
         else
         {
-            Time.timeScale = 1.0f;
-            camera.fieldOfView = defaultFOV;
-            slowMotionHUD.SetActive(false);
+            if (PauseGame.gameIsPaused == false)
+            {
+                Time.timeScale = 1.0f;
+                camera.fieldOfView = defaultFOV;
+                slowMotionHUD.SetActive(false);
+            }
         }
     }
 }

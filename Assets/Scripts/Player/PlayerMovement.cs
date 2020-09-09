@@ -19,10 +19,12 @@ public class PlayerMovement : MonoBehaviour
     private float sensMultiplier = 1f;
 
     //Movement
-    public float moveSpeed = 4500;
+    public float defaultMoveSpeed = 4500;
+    private float moveSpeed;
     public float maxSpeed = 20;
     public bool grounded;
     public LayerMask whatIsGround;
+    public float slowMoveSpeed = 2250;
 
     public float counterMovement = 0.175f;
     private float threshold = 0.01f;
@@ -36,8 +38,15 @@ public class PlayerMovement : MonoBehaviour
 
     //Jumping
     private bool readyToJump = true;
-    private float jumpCooldown = 0.25f;
+    private float jumpCooldown = 0.5f;
     public float jumpForce = 550f;
+    private bool canJump;
+    private float jumpCount;
+    public float maxJumpCount;
+
+    //Bow
+    public BowScript bowScript;
+    public GameObject bow;
 
     //Input
     float x, y;
@@ -51,6 +60,9 @@ public class PlayerMovement : MonoBehaviour
     public Inventory inventory;
     public Hud hud;
 
+    //walljump
+    bool isWallRight, isWallLeft;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -58,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        moveSpeed = defaultMoveSpeed;
         playerScale = transform.localScale;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -73,6 +86,9 @@ public class PlayerMovement : MonoBehaviour
     {
         MyInput();
         Look();
+        WallJump();
+        CheckForWall();
+        SlowMoveSpeed();
 
         if (mItemToPickup != null && Input.GetKeyDown(KeyCode.E))
         {
@@ -165,13 +181,25 @@ public class PlayerMovement : MonoBehaviour
         //Apply forces to move player
         rb.AddForce(orientation.transform.forward * y * moveSpeed * Time.deltaTime * multiplier * multiplierV);
         rb.AddForce(orientation.transform.right * x * moveSpeed * Time.deltaTime * multiplier);
+
+        if (grounded)
+        {
+            ResetJumpCount(0f);
+        }
+
+        if(!grounded && jumpCount < 1)
+        {
+            ResetJumpCount(1f);
+        }
     }
 
     private void Jump()
     {
-        if (grounded && readyToJump)
+        CanJumpCheck();
+        if (canJump && readyToJump)
         {
             readyToJump = false;
+            jumpCount++;
 
             //Add jump forces
             rb.AddForce(Vector2.up * jumpForce * 1.5f);
@@ -329,4 +357,102 @@ public class PlayerMovement : MonoBehaviour
             mItemToPickup = null;
         }
         }
+
+    void WallJump()
+    {
+        if(isWallLeft && jumping)
+        {
+            ResetJumpCount(0f);
+            JumpRight();
+        }
+        if (isWallRight && jumping)
+        {
+            ResetJumpCount(0f);
+            JumpLeft();
+        }
+    }
+
+    void CheckForWall()
+    {
+        isWallRight = Physics.Raycast(transform.position, orientation.right, 1f, whatIsGround);
+        isWallLeft = Physics.Raycast(transform.position, -orientation.right, 1f, whatIsGround);
+    }
+
+    private void CanJumpCheck()
+    {
+        if (jumpCount<maxJumpCount)
+        {
+            canJump = true;
+        }
+        else
+        {
+            canJump = false;
+        }
+    }
+
+    void ResetJumpCount(float resetTo)
+    {
+        jumpCount = resetTo;
+    }
+
+    void JumpLeft()
+    {
+        CanJumpCheck();
+        if (canJump && readyToJump)
+        {
+            readyToJump = false;
+            jumpCount++;
+
+            //Add jump forces
+            rb.AddForce(Vector2.up * jumpForce * 1.5f);
+            rb.AddForce(-orientation.right * jumpForce *1.5f);
+            rb.AddForce(orientation.forward* jumpForce * 1.5f/2f);
+            rb.AddForce(normalVector * jumpForce * 0.5f);
+
+            //If jumping while falling, reset y velocity.
+            Vector3 vel = rb.velocity;
+            if (rb.velocity.y < 0.5f)
+                rb.velocity = new Vector3(vel.x, 0, vel.z);
+            else if (rb.velocity.y > 0)
+                rb.velocity = new Vector3(vel.x, vel.y / 2, vel.z);
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+    }
+    void JumpRight()
+    {
+        CanJumpCheck();
+        if (canJump && readyToJump)
+        {
+            readyToJump = false;
+            jumpCount++;
+
+            //Add jump forces
+            rb.AddForce(Vector2.up * jumpForce * 1.5f);
+            rb.AddForce(orientation.right * jumpForce *1.5f);
+            rb.AddForce(orientation.forward * jumpForce * 1.5f / 2f);
+            rb.AddForce(normalVector * jumpForce * 0.5f);
+
+            //If jumping while falling, reset y velocity.
+            Vector3 vel = rb.velocity;
+            if (rb.velocity.y < 0.5f)
+                rb.velocity = new Vector3(vel.x, 0, vel.z);
+            else if (rb.velocity.y > 0)
+                rb.velocity = new Vector3(vel.x, vel.y / 2, vel.z);
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
+    }
+
+    void SlowMoveSpeed()
+    {
+        if(bow.activeSelf && bowScript.charge > 0f && bowScript.charge < bowScript.chargeMax)
+        {
+            moveSpeed = slowMoveSpeed;
+        }
+        else
+        {
+            moveSpeed = defaultMoveSpeed;
+        }
+    }
  }

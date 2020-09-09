@@ -1,8 +1,18 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class AssaultRifle : MonoBehaviour
 {
-    
+
+    public KeyCode reload;
+
+    public Text magText;
+
+    private bool reloading;
+
+    public float magSize;
+    private float bulletsInMag;
+    public float timeToReload;
 
     public float damage = 10f;
     public float range = 100f;
@@ -10,26 +20,42 @@ public class AssaultRifle : MonoBehaviour
     public float fireRate = 15;
 
     private float nextTimeToFire = 0f;
-    
+
     public Camera camera;
     public ParticleSystem muzzleFlash;
     public GameObject impactEffect, enemyImpactEffect;
 
+    private void Start()
+    {
+        bulletsInMag = magSize;
+    }
+
     void Update()
     {
-        if (Input.GetButton("Fire1") && Time.time>= nextTimeToFire)
+        magText.text = bulletsInMag.ToString() + " / " + magSize.ToString();
+        if (bulletsInMag > 0f && !reloading)
         {
-            nextTimeToFire = Time.time + 1f / fireRate;
-            Shoot();
+            if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire)
+            {
+                nextTimeToFire = Time.time + 1f / fireRate;
+                Shoot();
+            }
+        }
+
+        if (Input.GetKeyDown(reload))
+        {
+            reloading = true;
+            Invoke("Reload", timeToReload);
         }
     }
 
     void Shoot()
     {
         muzzleFlash.Play();
+        bulletsInMag--;
 
         RaycastHit hit;
-        if(Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, range))
+        if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, range))
         {
             Debug.Log(hit.transform.name);
 
@@ -60,5 +86,11 @@ public class AssaultRifle : MonoBehaviour
             }
 
         }
+    }
+
+    void Reload()
+    {
+        reloading = false;
+        bulletsInMag = magSize;
     }
 }
